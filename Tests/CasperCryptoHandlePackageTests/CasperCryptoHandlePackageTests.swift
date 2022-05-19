@@ -7,5 +7,7 @@ final class CasperCryptoHandlePackageTests: XCTestCase {
         // Use XCTAssert and related functions to verify your tests produce the correct
         // results.
         XCTAssertEqual(CasperCryptoHandlePackage().text, "Hello, World!")
+        let c = CasperCryptoHandlePackage()
+        c.TestFunc()
     }
 }
