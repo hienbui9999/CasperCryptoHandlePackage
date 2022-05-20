@@ -52,7 +52,7 @@ let prefixPublicKeyHexaStr: String = "302a300506032b656e032100"
     public var privateKeyInStr:String!;
     public var publicKeyInStr:String!;
 }
-@objcMembers public class Ed25519Cryto:NSObject {
+@objcMembers public class Ed25519CrytoSwift:NSObject {
     public var privateKey: Curve25519.Signing.PrivateKey!
     public var publicKey: Curve25519.Signing.PublicKey!
     /// Generate key pair
