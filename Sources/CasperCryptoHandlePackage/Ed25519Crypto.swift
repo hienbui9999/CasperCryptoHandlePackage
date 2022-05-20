@@ -49,7 +49,7 @@ let prefixPrivateKeyHexaStr: String = "302e020100300506032b657004220420"
 let prefixPublicKeyHexaStr: String = "302a300506032b656e032100"
 /// Class to handle the following actions on Ed25519 encryption:  key generation, read key from PEM file,  write key to PEM file, sign message, verify message
 
-@objcMembers public class Ed25519Cryto {
+@objcMembers public class Ed25519Cryto:NSObject {
     public var privateKey: Curve25519.Signing.PrivateKey!
     public var publicKey: Curve25519.Signing.PublicKey!
     /// Generate key pair
