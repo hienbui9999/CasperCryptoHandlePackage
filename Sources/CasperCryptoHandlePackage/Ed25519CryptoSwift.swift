@@ -65,6 +65,9 @@ let prefixPublicKeyHexaStr: String = "302a300506032b656e032100"
         for i in privateKeyBytes {
             privateKeyStr = privateKeyStr + String(i) + "_"
         }
+        print("private key in String is:\(privateKeyStr)")
+        let index = privateKeyStr.index(privateKeyStr.endIndex, offsetBy: -2)
+        privateKeyStr = String(privateKeyStr[...index])
         ret.privateKeyInStr = privateKeyStr
         print("private key in String is:\(privateKeyStr)")
         let publicKeyBytes = publicKey.rawRepresentation.bytes
@@ -72,6 +75,9 @@ let prefixPublicKeyHexaStr: String = "302a300506032b656e032100"
         for i in publicKeyBytes {
             publicKeyStr = publicKeyStr + String(i) + "_"
         }
+        print("public key in String is:\(publicKeyStr)")
+        let index2 = publicKeyStr.index(publicKeyStr.endIndex, offsetBy: -2)
+        publicKeyStr = String(publicKeyStr[...index2])
         print("public key in String is:\(publicKeyStr)")
         ret.publicKeyInStr = publicKeyStr
         return ret;
