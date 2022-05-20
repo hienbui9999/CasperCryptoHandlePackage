@@ -278,7 +278,7 @@ let prefixPublicKeyHexaStr: String = "302a300506032b656e032100"
             throw PemFileHandlerError.readPemFileNotFound
         }
     }
-    public func signMessageString(messageToSign:String,privateKeyStr:String) throws -> String {
+    public func signMessageString(messageToSign:String,privateKeyStr:String) -> String {
         //first change to String to Bytes to make private key
         let dataToSign = Data(messageToSign.hexaBytes);
         let strArray : Array = privateKeyStr.components(separatedBy: "_");
@@ -292,7 +292,8 @@ let prefixPublicKeyHexaStr: String = "302a300506032b656e032100"
             let signatureValue:String = "01" + signedMessage.hexEncodedString()
             return signatureValue
         } catch {
-            throw SignActionError.signMessageError
+            //throw SignActionError.signMessageError
+            return "ERROR_ERROR"
         }
     }
     /// Sign message
