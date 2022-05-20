@@ -48,15 +48,45 @@ let prefixPrivateKeyHexaStr: String = "302e020100300506032b657004220420"
 /// Prefix to add for public key in Hexa String. Since the generated keys are in 32 bytes, they need to add prefix to make the full key stored in PEM file
 let prefixPublicKeyHexaStr: String = "302a300506032b656e032100"
 /// Class to handle the following actions on Ed25519 encryption:  key generation, read key from PEM file,  write key to PEM file, sign message, verify message
-
+@objcMembers public class KeyPairClass:NSObject {
+    public var privateKeyInStr:String!;
+    public var publicKeyInStr:String!;
+}
 @objcMembers public class Ed25519Cryto:NSObject {
     public var privateKey: Curve25519.Signing.PrivateKey!
     public var publicKey: Curve25519.Signing.PublicKey!
     /// Generate key pair
-
+    public func generateKeyPair() -> KeyPairClass {
+        let ret = KeyPairClass();
+        privateKey = Curve25519.Signing.PrivateKey.init()
+        publicKey = privateKey.publicKey
+        let privateKeyBytes = privateKey.rawRepresentation.bytes
+        var privateKeyStr = ""
+        for i in privateKeyBytes {
+            privateKeyStr = privateKeyStr + String(i) + "_"
+        }
+        ret.privateKeyInStr = privateKeyStr
+        print("private key in String is:\(privateKeyStr)")
+        let publicKeyBytes = publicKey.rawRepresentation.bytes
+        var publicKeyStr = ""
+        for i in publicKeyBytes {
+            publicKeyStr = publicKeyStr + String(i) + "_"
+        }
+        print("public key in String is:\(publicKeyStr)")
+        ret.publicKeyInStr = publicKeyStr
+        return ret;
+    }
     public func generateKey() -> (Curve25519.Signing.PrivateKey, Curve25519.Signing.PublicKey) {
         privateKey = Curve25519.Signing.PrivateKey.init()
         publicKey = privateKey.publicKey
+        print(privateKey.rawRepresentation.bytes);
+        let bytes = privateKey.rawRepresentation.bytes;
+        do {
+        let otherPrivateKey:Curve25519.Signing.PrivateKey = try Curve25519.Signing.PrivateKey.init(rawRepresentation: bytes);
+        print("other private key:\(otherPrivateKey.rawRepresentation.bytes)");
+        } catch {
+            print ("Error generate key from bytes")
+        }
         return (privateKey, publicKey)
     }
     public func testCall() -> String {
