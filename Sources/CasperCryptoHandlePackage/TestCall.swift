@@ -21,7 +21,12 @@ import Blake2
         print ("---- AAAAAAAA --- TEst func called successfully ---- AAAAAAAA --- ");
         print ("---- AAAAAAAA --- TEst func called successfully ---- AAAAAAAA --- ");
     }
-    public func TestParameter(para1:String,para2:UInt,para3:)
+    public func TestParameter(para1:String,para2:UInt,para3:Sample1) {
+        print("Test parameter function call with para1:\(para1), para2:\(para2)")
+        print("And here is sample 1 information")
+        para3.sayHello();
+        para3.sayHello2(newName: "Nguyen Tien COng", newAge: 100);
+    }
     @objc func TestFunc2() {
         print ("---- AAAAAAAA --- TEst func 22called successfully ---- AAAAAAAA --- ");
         print ("---- AAAAAAAA --- TEst func 22called successfully ---- AAAAAAAA --- ");
