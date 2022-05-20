@@ -59,6 +59,10 @@ let prefixPublicKeyHexaStr: String = "302a300506032b656e032100"
         publicKey = privateKey.publicKey
         return (privateKey, publicKey)
     }
+    public func testCall() -> String {
+        print("Call test called")
+        return "Hello World!"
+    }
 
     /// Write private key to pem file
     public func writePrivateKeyToPemFile(privateKeyToWrite: Curve25519.Signing.PrivateKey,fileName: String) throws {
