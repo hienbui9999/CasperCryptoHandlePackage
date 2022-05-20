@@ -290,6 +290,7 @@ let prefixPublicKeyHexaStr: String = "302a300506032b656e032100"
         let strArray : Array = privateKeyStr.components(separatedBy: "_");
         var privateKeyArray:Array<UInt8> = Array<UInt8>();
         for i in strArray {
+            print("i is:\(i)")
             privateKeyArray.append(UInt8(i)!)
         }
         do {
