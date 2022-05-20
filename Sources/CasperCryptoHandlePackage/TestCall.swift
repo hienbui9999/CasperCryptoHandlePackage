@@ -32,7 +32,7 @@ import Blake2
         print ("---- AAAAAAAA --- TEst func called successfully ---- AAAAAAAA --- ");
         print ("---- AAAAAAAA --- TEst func called successfully ---- AAAAAAAA --- ");
         print ("---- AAAAAAAA --- TEst func called successfully ---- AAAAAAAA --- ");
-        let ed =  Ed25519Cryto();
+        let ed =  Ed25519CrytoSwift();
         ed.generateKeyPair();
     }
     public func TestParameter(para1:String,para2:UInt,para3:Sample1) {
