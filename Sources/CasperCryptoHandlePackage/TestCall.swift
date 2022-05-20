@@ -32,8 +32,8 @@ import Blake2
         print ("---- AAAAAAAA --- TEst func called successfully ---- AAAAAAAA --- ");
         print ("---- AAAAAAAA --- TEst func called successfully ---- AAAAAAAA --- ");
         print ("---- AAAAAAAA --- TEst func called successfully ---- AAAAAAAA --- ");
-        let ed =  Ed25519CrytoSwift();
-        ed.generateKeyPair();
+        //let ed =  Ed25519CrytoSwift();
+        //ed.generateKeyPair();
     }
     public func TestParameter(para1:String,para2:UInt,para3:Sample1) {
         print("Test parameter function call with para1:\(para1), para2:\(para2)")
@@ -145,5 +145,4 @@ extension String {
     public var bytes: Array<UInt8> {
       data(using: String.Encoding.utf8, allowLossyConversion: true)?.bytes ?? Array(utf8)
     }
-
 }

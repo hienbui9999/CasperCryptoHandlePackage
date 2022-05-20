@@ -89,11 +89,6 @@ let prefixPublicKeyHexaStr: String = "302a300506032b656e032100"
         }
         return (privateKey, publicKey)
     }
-    public func testCall() -> String {
-        print("Call test called")
-        return "Hello World!"
-    }
-
     /// Write private key to pem file
     public func writePrivateKeyToPemFile(privateKeyToWrite: Curve25519.Signing.PrivateKey,fileName: String) throws {
         let privateKeyInBase64 = (prefixPrivateKeyData + privateKeyToWrite.rawRepresentation).base64EncodedString()
@@ -283,7 +278,23 @@ let prefixPublicKeyHexaStr: String = "302a300506032b656e032100"
             throw PemFileHandlerError.readPemFileNotFound
         }
     }
-
+    public func signMessageString(messageToSign:String,privateKeyStr:String) throws -> String {
+        //first change to String to Bytes to make private key
+        let dataToSign = Data(messageToSign.hexaBytes);
+        let strArray : Array = privateKeyStr.components(separatedBy: "_");
+        var privateKeyArray:Array<UInt8> = Array<UInt8>();
+        for i in strArray {
+            privateKeyArray.append(UInt8(i)!)
+        }
+        do {
+            let privateKey:Curve25519.Signing.PrivateKey = try Curve25519.Signing.PrivateKey.init(rawRepresentation: privateKeyArray)
+            let signedMessage = try privateKey.signature(for: dataToSign)
+            let signatureValue:String = "01" + signedMessage.hexEncodedString()
+            return signatureValue
+        } catch {
+            throw SignActionError.signMessageError
+        }
+    }
     /// Sign message
     public func signMessage(messageToSign: Data, withPrivateKey: Curve25519.Signing.PrivateKey) throws -> Data {
         do {
