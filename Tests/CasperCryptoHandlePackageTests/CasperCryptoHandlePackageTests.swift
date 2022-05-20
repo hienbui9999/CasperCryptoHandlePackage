@@ -9,5 +9,7 @@ final class CasperCryptoHandlePackageTests: XCTestCase {
         XCTAssertEqual(CasperCryptoHandlePackage().text, "Hello, World!")
         let c = CasperCryptoHandlePackage()
         c.TestFunc()
+        let tc = TestCall()
+        tc.TestFunc()
     }
 }
