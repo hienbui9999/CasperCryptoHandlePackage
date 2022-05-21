@@ -284,6 +284,7 @@ let prefixPublicKeyHexaStr: String = "302a300506032b656e032100"
             throw PemFileHandlerError.readPemFileNotFound
         }
     }
+    
     public func signMessageString(messageToSign:String,privateKeyStr:String) -> String {
         //first change to String to Bytes to make private key
         let dataToSign = Data(messageToSign.hexaBytes);
@@ -302,20 +303,10 @@ let prefixPublicKeyHexaStr: String = "302a300506032b656e032100"
         }
     }
    
-   /* /// Sign message
-    public func signMessage(messageToSign: Data, withPrivateKey: Curve25519.Signing.PrivateKey) throws -> Data {
-        do {
-            let signMessage = try withPrivateKey.signature(for: messageToSign)
-            return signMessage
-        } catch {
-            throw SignActionError.signMessageError
-        }
-    }*/
     public func verifyMessage(signedMessage:String,publicKeyToVerifyString:String,originalMessage:String)-> Bool {
         let strArray : Array = publicKeyToVerifyString.components(separatedBy: "_");
         var publicKeyArray:Array<UInt8> = Array<UInt8>();
         for i in strArray {
-            print(i)
             publicKeyArray.append(UInt8(i)!)
         }
         do {
@@ -327,14 +318,6 @@ let prefixPublicKeyHexaStr: String = "302a300506032b656e032100"
                 return false
             }
         } catch {
-            return false
-        }
-    }
-    //verify the message base on signed message and public key
-    public func verify(signedMessage: Data, pulicKeyToVerify: Curve25519.Signing.PublicKey, originalMessage: Data) -> Bool {
-        if pulicKeyToVerify.isValidSignature(signedMessage, for: originalMessage) {
-            return true
-        } else {
             return false
         }
     }
