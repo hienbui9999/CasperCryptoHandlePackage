@@ -296,7 +296,7 @@ let prefixPublicKeyHexaStr: String = "302a300506032b656e032100"
         do {
             let privateKey:Curve25519.Signing.PrivateKey = try Curve25519.Signing.PrivateKey.init(rawRepresentation: privateKeyArray)
             let signedMessage = try privateKey.signature(for: dataToSign)
-            let signatureValue:String = "01" + signedMessage.hexEncodedString()
+            let signatureValue:String = signedMessage.hexEncodedString()
             return signatureValue
         } catch {
             //throw SignActionError.signMessageError
@@ -316,6 +316,7 @@ let prefixPublicKeyHexaStr: String = "302a300506032b656e032100"
         let strArray : Array = publicKeyToVerifyString.components(separatedBy: "_");
         var publicKeyArray:Array<UInt8> = Array<UInt8>();
         for i in strArray {
+            print(i)
             publicKeyArray.append(UInt8(i)!)
         }
         do {
