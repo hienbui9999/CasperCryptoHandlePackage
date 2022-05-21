@@ -65,20 +65,20 @@ let prefixPublicKeyHexaStr: String = "302a300506032b656e032100"
         for i in privateKeyBytes {
             privateKeyStr = privateKeyStr + String(i) + "_"
         }
-        print("private key in String is:\(privateKeyStr)")
+       // print("private key in String is:\(privateKeyStr)")
         let index = privateKeyStr.index(privateKeyStr.endIndex, offsetBy: -2)
         privateKeyStr = String(privateKeyStr[...index])
         ret.privateKeyInStr = privateKeyStr
-        print("private key in String is:\(privateKeyStr)")
+        //print("private key in String is:\(privateKeyStr)")
         let publicKeyBytes = publicKey.rawRepresentation.bytes
         var publicKeyStr = ""
         for i in publicKeyBytes {
             publicKeyStr = publicKeyStr + String(i) + "_"
         }
-        print("public key in String is:\(publicKeyStr)")
+       // print("public key in String is:\(publicKeyStr)")
         let index2 = publicKeyStr.index(publicKeyStr.endIndex, offsetBy: -2)
         publicKeyStr = String(publicKeyStr[...index2])
-        print("public key in String is:\(publicKeyStr)")
+       // print("public key in String is:\(publicKeyStr)")
         ret.publicKeyInStr = publicKeyStr
         return ret;
     }
@@ -89,7 +89,7 @@ let prefixPublicKeyHexaStr: String = "302a300506032b656e032100"
         let bytes = privateKey.rawRepresentation.bytes;
         do {
         let otherPrivateKey:Curve25519.Signing.PrivateKey = try Curve25519.Signing.PrivateKey.init(rawRepresentation: bytes);
-        print("other private key:\(otherPrivateKey.rawRepresentation.bytes)");
+       // print("other private key:\(otherPrivateKey.rawRepresentation.bytes)");
         } catch {
             print ("Error generate key from bytes")
         }
