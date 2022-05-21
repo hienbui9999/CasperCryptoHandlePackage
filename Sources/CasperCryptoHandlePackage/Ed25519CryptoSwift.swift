@@ -320,6 +320,16 @@ let prefixPublicKeyHexaStr: String = "302a300506032b656e032100"
                 print("IN SIGN MESSAGE, Verify FAIL with public key from private key")
             }
             let signatureValue:String = signedMessage.hexEncodedString()
+            if(verify(signedMessage: signatureValue.hexDecodedData(), pulicKeyToVerify: publicKey, originalMessage: Data(messageToSign.hexaBytes))) {
+                print("signatureValue-IN SIGN MESSAGE, Verify success with public key from private key")
+            } else {
+                print("signatureValue-IN SIGN MESSAGE, Verify FAIL with public key from private key")
+            }
+            if(verify(signedMessage: signatureValue.hexDecodedData(), pulicKeyToVerify: publicKey2, originalMessage: Data(messageToSign.hexaBytes))) {
+                print("signatureValue-IN SIGN MESSAGE, Verify success with public key from bytes array")
+            } else {
+                print("signatureValue-IN SIGN MESSAGE, Verify FAIL with public key from bytes array")
+            }
             return signatureValue
         } catch {
             //throw SignActionError.signMessageError
