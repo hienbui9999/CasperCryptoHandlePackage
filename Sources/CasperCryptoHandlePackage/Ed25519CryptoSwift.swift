@@ -303,6 +303,24 @@ let prefixPublicKeyHexaStr: String = "302a300506032b656e032100"
             return "ERROR_ERROR"
         }
     }
+    
+    public func signMessageStringWithDataResult(messageToSign:String,privateKeyStr:String) -> Data {
+        //first change to String to Bytes to make private key
+        let dataToSign = Data(messageToSign.hexaBytes);
+        let strArray : Array = privateKeyStr.components(separatedBy: "_");
+        var privateKeyArray:Array<UInt8> = Array<UInt8>();
+        for i in strArray {
+            privateKeyArray.append(UInt8(i)!)
+        }
+        do {
+            let privateKey:Curve25519.Signing.PrivateKey = try Curve25519.Signing.PrivateKey.init(rawRepresentation: privateKeyArray)
+            let signedMessage = try privateKey.signature(for: dataToSign)
+            return signedMessage
+        } catch {
+            //throw SignActionError.signMessageError
+            return Data()
+        }
+    }
    /* /// Sign message
     public func signMessage(messageToSign: Data, withPrivateKey: Curve25519.Signing.PrivateKey) throws -> Data {
         do {
