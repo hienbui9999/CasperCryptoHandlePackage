@@ -312,7 +312,23 @@ let prefixPublicKeyHexaStr: String = "302a300506032b656e032100"
             throw SignActionError.signMessageError
         }
     }
-
+    public func verifyMessage(signedMessage:String,publicKeyToVerifyString:String,originalMessage:String)-> Bool {
+        let strArray : Array = publicKeyToVerifyString.components(separatedBy: "_");
+        var publicKeyArray:Array<UInt8> = Array<UInt8>();
+        for i in strArray {
+            publicKeyArray.append(UInt8(i)!)
+        }
+        do {
+        let publicKey = try Curve25519.Signing.PublicKey.init(rawRepresentation: publicKeyArray)
+            if publicKey.isValidSignature(Data(signedMessage.bytes), for: Data(originalMessage.bytes)) {
+                return true
+            } else {
+                return false
+            }
+        } catch {
+            return false
+        }
+    }
     //verify the message base on signed message and public key
     public func verify(signedMessage: Data, pulicKeyToVerify: Curve25519.Signing.PublicKey, originalMessage: Data) -> Bool {
         if pulicKeyToVerify.isValidSignature(signedMessage, for: originalMessage) {
