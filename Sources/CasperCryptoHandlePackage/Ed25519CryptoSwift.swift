@@ -303,7 +303,7 @@ let prefixPublicKeyHexaStr: String = "302a300506032b656e032100"
             return "ERROR_ERROR"
         }
     }
-    
+    //Seem to be no need function
     public func signMessageStringWithDataResult(messageToSign:String,privateKeyStr:String) -> Data {
         //first change to String to Bytes to make private key
         let dataToSign = Data(messageToSign.hexaBytes);
@@ -340,8 +340,9 @@ let prefixPublicKeyHexaStr: String = "302a300506032b656e032100"
         do {
         let publicKey = try Curve25519.Signing.PublicKey.init(rawRepresentation: publicKeyArray)
             print("IN SWIFT VERIFY, Signed message is:\(signedMessage), original message is:\(originalMessage)")
-            let signatureValueData:Data = signedMessage.hexDecodedData()
-            if publicKey.isValidSignature(signatureValueData, for: Data(originalMessage.bytes)) {
+            let signMessageStr = signedMessage.hexToString()
+            //let signatureValueData:Data = signedMessage.hexDecodedData()
+            if publicKey.isValidSignature(Data(signMessageStr.bytes), for: Data(originalMessage.bytes)) {
                 return true
             } else {
                 return false
