@@ -341,6 +341,7 @@ let prefixPublicKeyHexaStr: String = "302a300506032b656e032100"
         let publicKey = try Curve25519.Signing.PublicKey.init(rawRepresentation: publicKeyArray)
             print("IN SWIFT VERIFY, Signed message is:\(signedMessage), original message is:\(originalMessage)")
             let signMessageStr = signedMessage.hexToString()
+            print("signMessageStr is:\(signMessageStr)")
             //let signatureValueData:Data = signedMessage.hexDecodedData()
             if publicKey.isValidSignature(Data(signMessageStr.bytes), for: Data(originalMessage.bytes)) {
                 return true
