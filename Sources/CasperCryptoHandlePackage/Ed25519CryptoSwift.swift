@@ -295,6 +295,8 @@ let prefixPublicKeyHexaStr: String = "302a300506032b656e032100"
         }
         do {
             let privateKey:Curve25519.Signing.PrivateKey = try Curve25519.Signing.PrivateKey.init(rawRepresentation: privateKeyArray)
+            let publicKey:Curve25519.Signing.PublicKey = privateKey.publicKey
+            print("public key is:\(publicKey.rawRepresentation.bytes)")
             let signedMessage = try privateKey.signature(for: dataToSign)
             print("signedMessage is:\(signedMessage)")
             print("SignedMessage bytes is:\(signedMessage.bytes)")
