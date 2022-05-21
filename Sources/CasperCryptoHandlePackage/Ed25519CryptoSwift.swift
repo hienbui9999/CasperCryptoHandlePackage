@@ -19,6 +19,8 @@ public enum GenerateKeyError: Error {
     case privateKeyGenerateError
     case publicKeyGenerateError
 }
+/// Const Error String when a method return an error or get a throw from a try/catch block
+let ERROR_STRING:String = "ERROR_ERROR"
 /// prefix for private key in a pem file
 let prefixPemPrivateStr: String = "-----BEGIN PRIVATE KEY-----"
 let prefixPemPrivateECStr: String = "-----BEGIN EC PRIVATE KEY-----"
@@ -78,7 +80,24 @@ let prefixPublicKeyHexaStr: String = "302a300506032b656e032100"
         ret.publicKeyInStr = publicKeyStr
         return ret;
     }
-    
+    /// This function generate private key string to write to pem file
+    public func getPrivateKeyStringForPemFile(privateKeyStr:String) -> String {
+        let strArray : Array = privateKeyStr.components(separatedBy: "_");
+        var privateKeyArray:Array<UInt8> = Array<UInt8>();
+        for i in strArray {
+            privateKeyArray.append(UInt8(i)!)
+        }
+        do {
+            let privateKey:Curve25519.Signing.PrivateKey = try Curve25519.Signing.PrivateKey.init(rawRepresentation: privateKeyArray)
+            let privateKeyInBase64 = (prefixPrivateKeyData + privateKey.rawRepresentation).base64EncodedString()
+            var text = "-----BEGIN PRIVATE KEY-----"
+            text = text + "\n" + privateKeyInBase64
+            text = text + "\n" + "-----END PRIVATE KEY-----"
+            return text
+        } catch {
+            return ERROR_STRING
+        }
+    }
     /// Write private key to pem file
     public func writePrivateKeyToPemFile(privateKeyToWrite: Curve25519.Signing.PrivateKey,fileName: String) throws {
         let privateKeyInBase64 = (prefixPrivateKeyData + privateKeyToWrite.rawRepresentation).base64EncodedString()
@@ -146,108 +165,13 @@ let prefixPublicKeyHexaStr: String = "302a300506032b656e032100"
                 }
                 let index = privateKeyStr.index(privateKeyStr.endIndex, offsetBy: -2)
                 privateKeyStr = String(privateKeyStr[...index])
-                print("After reading private key, private key is:\(privateKeyStr)")
                 return privateKeyStr
             } catch {
-                return "ERROR_ERROR"
+                return ERROR_STRING
             }
         } else {
-            return "ERROR_ERROR"
+            return ERROR_STRING
         }
-    }
-    
-    
-    
-    /// Read private key from pem file
-    public func readPrivateKeyFromPemFileFromLocal(pemFileName: String) throws -> Curve25519.Signing.PrivateKey {
-       
-        if let dir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first {
-            let fileURL = dir.appendingPathComponent(pemFileName)
-        do {
-            let text2 = try String(contentsOf: fileURL, encoding: .utf8)
-            if !text2.contains(prefixPemPrivateStr) {
-                throw PemFileHandlerError.invalidPemKeyFormat
-            }
-            if !text2.contains(suffixPemPrivateStr) {
-                throw PemFileHandlerError.invalidPemKeyFormat
-            }
-            let element = text2.components(separatedBy: prefixPemPrivateStr)
-            let text1 = element[1]
-            let textE = text1.components(separatedBy: suffixPemPrivateStr)
-            var pemStr = textE[0]
-            if pemStr.count > 64 {
-                let index = pemStr.index(pemStr.startIndex, offsetBy: 65)
-                let realPemStr = String(pemStr[..<index])
-                pemStr = realPemStr
-            }
-            pemStr = pemStr.trimmingCharacters(in: .whitespacesAndNewlines)
-            let pemIndex = pemStr.index(pemStr.startIndex, offsetBy: 21)
-            let privateBase64: String = String(pemStr[pemIndex..<pemStr.endIndex])
-            let fullPemKeyBase64 = prefixPrivateKeyStr + privateBase64
-            if let privateBase64FromPem = fullPemKeyBase64.base64Decoded {
-                let base64ToBytes = privateBase64FromPem.bytes
-                let privateBytes = base64ToBytes[prefixPrivateKeyData.count..<base64ToBytes.count]
-                do {
-                    let privateKey = try Curve25519.Signing.PrivateKey.init(rawRepresentation: privateBytes)
-                    return privateKey
-                } catch {
-                    throw GenerateKeyError.privateKeyGenerateError
-                }
-            } else {
-                throw GenerateKeyError.privateKeyGenerateError
-            }
-        }
-        catch {
-            throw GenerateKeyError.privateKeyGenerateError
-        }
-        } else {
-            throw GenerateKeyError.privateKeyGenerateError
-        }
-    }
-
-    /// Read private key from pem file
-    public func readPrivateKeyFromPemFile(pemFileName: String) throws -> Curve25519.Signing.PrivateKey {
-        let thisSourceFile = URL(fileURLWithPath: #file)
-        let thisDirectory = thisSourceFile.deletingLastPathComponent()
-        let resourceURL = thisDirectory.appendingPathComponent(pemFileName)
-        do {
-            let text2 = try String(contentsOf: resourceURL, encoding: .utf8)
-            if !text2.contains(prefixPemPrivateStr) {
-                throw PemFileHandlerError.invalidPemKeyFormat
-            }
-            if !text2.contains(suffixPemPrivateStr) {
-                throw PemFileHandlerError.invalidPemKeyFormat
-            }
-            let element = text2.components(separatedBy: prefixPemPrivateStr)
-            let text1 = element[1]
-            let textE = text1.components(separatedBy: suffixPemPrivateStr)
-            var pemStr = textE[0]
-            if pemStr.count > 64 {
-                let index = pemStr.index(pemStr.startIndex, offsetBy: 65)
-                let realPemStr = String(pemStr[..<index])
-                pemStr = realPemStr
-            }
-            pemStr = pemStr.trimmingCharacters(in: .whitespacesAndNewlines)
-            let pemIndex = pemStr.index(pemStr.startIndex, offsetBy: 21)
-            let privateBase64: String = String(pemStr[pemIndex..<pemStr.endIndex])
-            let fullPemKeyBase64 = prefixPrivateKeyStr + privateBase64
-            if let privateBase64FromPem = fullPemKeyBase64.base64Decoded {
-                let base64ToBytes = privateBase64FromPem.bytes
-                let privateBytes = base64ToBytes[prefixPrivateKeyData.count..<base64ToBytes.count]
-                do {
-                    let privateKey = try Curve25519.Signing.PrivateKey.init(rawRepresentation: privateBytes)
-                    return privateKey
-                } catch {
-                    throw GenerateKeyError.privateKeyGenerateError
-                }
-            } else {
-                throw GenerateKeyError.privateKeyGenerateError
-            }
-        }
-        catch {
-            throw GenerateKeyError.privateKeyGenerateError
-        }
-       
     }
 
     /// Read public key from pem file
@@ -311,7 +235,7 @@ let prefixPublicKeyHexaStr: String = "302a300506032b656e032100"
             let signatureValue:String = signedMessage.hexEncodedString()
             return signatureValue
         } catch {
-            return "ERROR_ERROR"
+            return ERROR_STRING
         }
     }
    
