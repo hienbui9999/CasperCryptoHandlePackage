@@ -296,6 +296,8 @@ let prefixPublicKeyHexaStr: String = "302a300506032b656e032100"
         do {
             let privateKey:Curve25519.Signing.PrivateKey = try Curve25519.Signing.PrivateKey.init(rawRepresentation: privateKeyArray)
             let signedMessage = try privateKey.signature(for: dataToSign)
+            print("signedMessage is:\(signedMessage)")
+            print("SignedMessage bytes is:\(signedMessage.bytes)")
             let signatureValue:String = signedMessage.hexEncodedString()
             return signatureValue
         } catch {
@@ -323,11 +325,11 @@ let prefixPublicKeyHexaStr: String = "302a300506032b656e032100"
         do {
         let publicKey = try Curve25519.Signing.PublicKey.init(rawRepresentation: publicKeyArray)
             print("IN SWIFT VERIFY, Signed message is:\(signedMessage), original message is:\(originalMessage)")
-            let signMessageStr = signedMessage.hexToString()
+            let signMessageStr = signedMessage.hexadecimal
             print("signMessageStr is:\(signMessageStr)")
-            print("signMessageStr bytes is:\(signMessageStr.bytes)")
+            print("signMessageStr bytes is:\(signMessageStr!.bytes)")
             //let signatureValueData:Data = signedMessage.hexDecodedData()
-            if publicKey.isValidSignature(Data(signMessageStr.bytes), for: Data(originalMessage.bytes)) {
+            if publicKey.isValidSignature(signedMessage.hexDecodedData(), for: Data(originalMessage.bytes)) {
                 return true
             } else {
                 return false
