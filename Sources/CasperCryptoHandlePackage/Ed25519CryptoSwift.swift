@@ -284,55 +284,20 @@ let prefixPublicKeyHexaStr: String = "302a300506032b656e032100"
             throw PemFileHandlerError.readPemFileNotFound
         }
     }
-    public func signMessageString(messageToSign:String,privateKeyStr:String,publicKeyStr:String) -> String {
+    public func signMessageString(messageToSign:String,privateKeyStr:String) -> String {
         //first change to String to Bytes to make private key
         let dataToSign = Data(messageToSign.hexaBytes);
-        print("Hexa message to sign:\(messageToSign.hexaBytes)")
         let strArray : Array = privateKeyStr.components(separatedBy: "_");
         var privateKeyArray:Array<UInt8> = Array<UInt8>();
         for i in strArray {
             privateKeyArray.append(UInt8(i)!)
         }
-        let strPublicArray : Array = publicKeyStr.components(separatedBy: "_");
-        var publicKeyArray:Array<UInt8> = Array<UInt8>();
-        for i in strPublicArray {
-            publicKeyArray.append(UInt8(i)!)
-        }
         do {
             let privateKey:Curve25519.Signing.PrivateKey = try Curve25519.Signing.PrivateKey.init(rawRepresentation: privateKeyArray)
-            let publicKey:Curve25519.Signing.PublicKey = privateKey.publicKey
-            let publicKey2:Curve25519.Signing.PublicKey = try Curve25519.Signing.PublicKey.init(rawRepresentation: publicKeyArray)
-            print ("Public key from Bytes Array is:\(publicKey2.rawRepresentation.bytes)")
-            print("public key from PRivate KEy is:\(publicKey.rawRepresentation.bytes)")
             let signedMessage = try privateKey.signature(for: dataToSign)
-            print("signedMessage is:\(signedMessage)")
-            print("SignedMessage bytes is:\(signedMessage.bytes)")
-            //Test verify message with public key from bytes array
-            if(verify(signedMessage: signedMessage, pulicKeyToVerify: publicKey2, originalMessage: Data(messageToSign.hexaBytes))) {
-                print("IN SIGN MESSAGE, Verify success with public key from bytes array")
-            } else {
-                print("IN SIGN MESSAGE, Verify FAIL with public key from bytes array")
-            }
-            //Test verify message with publickey from private key
-            if(verify(signedMessage: signedMessage, pulicKeyToVerify: publicKey, originalMessage: Data(messageToSign.hexaBytes))) {
-                print("IN SIGN MESSAGE, Verify success with public key from private key")
-            } else {
-                print("IN SIGN MESSAGE, Verify FAIL with public key from private key")
-            }
             let signatureValue:String = signedMessage.hexEncodedString()
-            if(verify(signedMessage: signatureValue.hexDecodedData(), pulicKeyToVerify: publicKey, originalMessage: Data(messageToSign.hexaBytes))) {
-                print("signatureValue-IN SIGN MESSAGE, Verify success with public key from private key")
-            } else {
-                print("signatureValue-IN SIGN MESSAGE, Verify FAIL with public key from private key")
-            }
-            if(verify(signedMessage: signatureValue.hexDecodedData(), pulicKeyToVerify: publicKey2, originalMessage: Data(messageToSign.hexaBytes))) {
-                print("signatureValue-IN SIGN MESSAGE, Verify success with public key from bytes array")
-            } else {
-                print("signatureValue-IN SIGN MESSAGE, Verify FAIL with public key from bytes array")
-            }
             return signatureValue
         } catch {
-            //throw SignActionError.signMessageError
             return "ERROR_ERROR"
         }
     }
@@ -355,11 +320,7 @@ let prefixPublicKeyHexaStr: String = "302a300506032b656e032100"
         }
         do {
         let publicKey = try Curve25519.Signing.PublicKey.init(rawRepresentation: publicKeyArray)
-            print("IN SWIFT VERIFY, Signed message is:\(signedMessage), original message is:\(originalMessage)")
             let signMessageStr = signedMessage.hexadecimal
-            print("In verify, signMessageStr is:\(signMessageStr)")
-            print("In verify, signMessageStr bytes is:\(signMessageStr!.bytes)")
-            //let signatureValueData:Data = signedMessage.hexDecodedData()
             if publicKey.isValidSignature(Data(signMessageStr!.bytes), for: Data(originalMessage.hexaBytes)) {
                 return true
             } else {
