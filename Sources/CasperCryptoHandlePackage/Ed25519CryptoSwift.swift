@@ -303,7 +303,7 @@ let prefixPublicKeyHexaStr: String = "302a300506032b656e032100"
             return "ERROR_ERROR"
         }
     }
-    /// Sign message
+   /* /// Sign message
     public func signMessage(messageToSign: Data, withPrivateKey: Curve25519.Signing.PrivateKey) throws -> Data {
         do {
             let signMessage = try withPrivateKey.signature(for: messageToSign)
@@ -311,7 +311,7 @@ let prefixPublicKeyHexaStr: String = "302a300506032b656e032100"
         } catch {
             throw SignActionError.signMessageError
         }
-    }
+    }*/
     public func verifyMessage(signedMessage:String,publicKeyToVerifyString:String,originalMessage:String)-> Bool {
         let strArray : Array = publicKeyToVerifyString.components(separatedBy: "_");
         var publicKeyArray:Array<UInt8> = Array<UInt8>();
@@ -321,7 +321,9 @@ let prefixPublicKeyHexaStr: String = "302a300506032b656e032100"
         }
         do {
         let publicKey = try Curve25519.Signing.PublicKey.init(rawRepresentation: publicKeyArray)
-            if publicKey.isValidSignature(Data(signedMessage.bytes), for: Data(originalMessage.bytes)) {
+            print("IN SWIFT VERIFY, Signed message is:\(signedMessage), original message is:\(originalMessage)")
+            let signatureValueData:Data = signedMessage.hexDecodedData()
+            if publicKey.isValidSignature(signatureValueData, for: Data(originalMessage.bytes)) {
                 return true
             } else {
                 return false
