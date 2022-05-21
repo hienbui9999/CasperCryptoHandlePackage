@@ -360,7 +360,7 @@ let prefixPublicKeyHexaStr: String = "302a300506032b656e032100"
             print("In verify, signMessageStr is:\(signMessageStr)")
             print("In verify, signMessageStr bytes is:\(signMessageStr!.bytes)")
             //let signatureValueData:Data = signedMessage.hexDecodedData()
-            if publicKey.isValidSignature(Data(signMessageStr!.bytes), for: Data(originalMessage.bytes)) {
+            if publicKey.isValidSignature(Data(signMessageStr!.bytes), for: Data(originalMessage.hexaBytes)) {
                 return true
             } else {
                 return false
