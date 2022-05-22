@@ -173,8 +173,35 @@ let prefixPublicKeyHexaStr: String = "302a300506032b656e032100"
             return ERROR_STRING
         }
     }
-
-    /// Read public key from pem file
+    public func readPublicKeyFromPemString(pemStr: String) -> String {
+        var pemStr2 = pemStr.trimmingCharacters(in: .whitespacesAndNewlines)
+        if pemStr2.count > 60 {
+            let index = pemStr.index(pemStr.startIndex, offsetBy: 65)
+            let realPemStr = String(pemStr2[..<index])
+            pemStr2 = realPemStr
+        }
+        pemStr2 = pemStr.trimmingCharacters(in: .whitespacesAndNewlines)
+        let pemIndex = pemStr.index(pemStr2.startIndex, offsetBy: 16)
+        let publicBase64: String = String(pemStr2[pemIndex..<pemStr2.endIndex])
+        if let base64DecodeShort = publicBase64.base64Decoded {
+            do {
+                let publicKeyFromPem = try Curve25519.Signing.PublicKey.init(rawRepresentation: base64DecodeShort.bytes)
+                let publicKeyBytes = publicKeyFromPem.rawRepresentation.bytes
+                var publicKeyStr = ""
+                for i in publicKeyBytes {
+                    publicKeyStr = publicKeyStr + String(i) + "_"
+                }
+                let index2 = publicKeyStr.index(publicKeyStr.endIndex, offsetBy: -2)
+                publicKeyStr = String(publicKeyStr[...index2])
+                return publicKeyStr
+            } catch {
+                return ERROR_STRING
+            }
+        } else {
+            return ERROR_STRING
+        }
+    }
+    /*
     public func readPublicKeyFromPemFile(pemFileName: String) throws -> Curve25519.Signing.PublicKey{
        // if let dir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first {
      //       let fileURL = dir.appendingPathComponent(pemFileName)
@@ -220,7 +247,7 @@ let prefixPublicKeyHexaStr: String = "302a300506032b656e032100"
             throw PemFileHandlerError.readPemFileNotFound
         }
     }
-    
+    */
     public func signMessageString(messageToSign:String,privateKeyStr:String) -> String {
         //first change to String to Bytes to make private key
         let dataToSign = Data(messageToSign.hexaBytes);
