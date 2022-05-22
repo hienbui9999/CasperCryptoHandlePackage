@@ -18,114 +18,32 @@ import SwiftECC
         ret.publicKeyInStr = publicKey.pem
         return ret
     }
-    /// Generate key pair
-    public func secp256k1GenerateKey() -> (ECPrivateKey, ECPublicKey) {
-        let domain = Domain.instance(curve: .EC256k1)
-        let (publicKey, privateKey) = domain.makeKeyPair()
-        return (privateKey, publicKey)
-    }
 /**
-   Read Private key from a Pem file.
-   - Parameter: Pem file name and URL
-   - Returns: ECPrivateKey of type secp256k1
+   This function checks if a pem string can turn to a private key
+   - Parameter: Pem string
+   - Returns: true if the pem can generate the private key, false otherwise
    */
-
-    public func readPrivateKeyFromFile(pemFileName: String) throws -> ECPrivateKey {
-       
-        let thisSourceFile = URL(fileURLWithPath: #file)
-        let thisDirectory = thisSourceFile.deletingLastPathComponent()
-        let resourceURL = thisDirectory.appendingPathComponent(pemFileName)
+    public func checkPrivateKeyPemStringValid(pemString: String) -> Bool {
         do {
-            var text2 = try String(contentsOf: resourceURL, encoding: .utf8)
-            if !text2.contains(prefixPemPrivateStr) && !text2.contains(prefixPemPrivateECStr) {
-                throw PemFileHandlerError.invalidPemKeyPrefix
-            }
-            if !text2.contains(suffixPemPrivateStr) && !text2.contains(suffixPemPrivateECStr) {
-                throw PemFileHandlerError.invalidPemKeySuffix
-            }
-            if text2.contains(prefixPemPrivateStr) {
-                text2 = text2.replacingOccurrences(of: prefixPemPrivateStr, with: prefixPemPrivateECStr)
-                text2 = text2.replacingOccurrences(of: suffixPemPrivateStr, with: suffixPemPrivateECStr)
-            }
-            let privateKey = try ECPrivateKey.init(pem: text2)
-            let domain = Domain.instance(curve: .EC256k1)
-            
-            let privateKey2 = try ECPrivateKey.init(domain: domain, s: privateKey.s)
-            return privateKey2
-        } catch {
-            throw PemFileHandlerError.invalidPemKeyFormat
-        }
-    }
-
-    public func readPublicKeyFromFile(pemFileName: String) throws -> ECPublicKey {
-        let thisSourceFile = URL(fileURLWithPath: #file)
-        let thisDirectory = thisSourceFile.deletingLastPathComponent()
-        let resourceURL = thisDirectory.appendingPathComponent(pemFileName)
-        do {
-        var text2 = try String(contentsOf: resourceURL, encoding: .utf8)
-            if !text2.contains(prefixPemPublicStr) && !text2.contains(prefixPemPublicECStr) {
-                throw PemFileHandlerError.invalidPemKeyPrefix
-            }
-            if !text2.contains(suffixPemPublicStr) && !text2.contains(suffixPemPublicECStr) {
-                throw PemFileHandlerError.invalidPemKeySuffix
-            }
-            if text2.contains(prefixPemPublicStr) {
-                text2 = text2.replacingOccurrences(of: prefixPemPublicECStr, with: prefixPemPublicStr)
-                text2 = text2.replacingOccurrences(of: suffixPemPublicECStr, with: suffixPemPublicStr)
-            }
-            text2 = text2.trimmingCharacters(in: .whitespaces)
-            let publicKey = try ECPublicKey.init(pem: text2)
-            return publicKey
-        } catch {
-            throw PemFileHandlerError.invalidPemKeyFormat
-        }
-    }
-
-    public func writePrivateKeyToPemFile(privateKeyToWrite: ECPrivateKey, fileName: String) throws -> Bool {
-        let text = privateKeyToWrite.pem
-        let thisSourceFile = URL(fileURLWithPath: #file)
-        let thisDirectory = thisSourceFile.deletingLastPathComponent()
-        let fileURL = thisDirectory.appendingPathComponent(fileName)
-        if FileManager.default.fileExists(atPath: fileURL.path) {
-            do {
-                try FileManager.default.removeItem(atPath: fileURL.path)
-            } catch {
-               //  NSLog("Secp256k1 Private key file does not exist, about to create new one!")
-            }
-           //  NSLog("Delete auto generated Secp256k1 private file.")
-        }
-        do {
-            try text.write(to: fileURL, atomically: false, encoding: .utf8)
+            let privateKey = try ECPrivateKey.init(pem: pemString)
             return true
-        }
-        catch {
-            throw PemFileHandlerError.writePemFileError
+        } catch {
+            return false
         }
     }
-
-    public func writePublicKeyToPemFile(publicKeyToWrite: ECPublicKey, fileName: String) throws -> Bool {
-        let text = publicKeyToWrite.pem
-        let thisSourceFile = URL(fileURLWithPath: #file)
-        let thisDirectory = thisSourceFile.deletingLastPathComponent()
-        let fileURL = thisDirectory.appendingPathComponent(fileName)
-        if FileManager.default.fileExists(atPath: fileURL.path) {
-            do {
-                try FileManager.default.removeItem(atPath: fileURL.path)
-            } catch {
-              //   NSLog("Secp256k1 Public key file does not exist, about to create new one!")
-            }
-           //  NSLog("Delete auto generated Secp256k1 public file.")
-        }
+    /**
+       This function checks if a pem string can turn to a public key
+       - Parameter: Pem string
+       - Returns: true if the pem can generate the public key, false otherwise
+       */
+    public func checkPublicKeyPemStringValid(pemString: String) -> Bool {
         do {
-            try text.write(to: fileURL, atomically: false, encoding: .utf8)
+            let publicKey = try ECPublicKey.init(pem: pemString)
             return true
-        }
-        catch {
-            throw PemFileHandlerError.writePemFileError
+        } catch {
+            return false
         }
     }
-
-  
 
     public func signMessage(messageToSign: Data, withPrivateKey: ECPrivateKey) -> ECSignature {
         print("With EC, private key information s asSignedBytes:\(withPrivateKey.s.asSignedBytes())")
