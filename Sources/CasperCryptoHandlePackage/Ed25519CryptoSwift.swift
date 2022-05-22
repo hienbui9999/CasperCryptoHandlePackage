@@ -234,5 +234,18 @@ let prefixPublicKeyHexaStr: String = "302a300506032b656e032100"
             return false
         }
     }
+    public func generateTime() -> String {
+        let timestamp = NSDate().timeIntervalSince1970
+        let tE = String(timestamp).components(separatedBy: ".")
+        let mili = tE[1]
+        let indexMili = mili.index(mili.startIndex, offsetBy: 3)
+        let miliStr = mili[..<indexMili]
+        let myTimeInterval = TimeInterval(timestamp)
+        let time = NSDate(timeIntervalSince1970: TimeInterval(myTimeInterval))
+        let timeStr = String(time.description)
+        let timeElements = timeStr.components(separatedBy: " ")
+        let newTimeStr = timeElements[0] + "T" + timeElements[1] + ".\(miliStr)Z"
+        return newTimeStr
+    }
 }
 
