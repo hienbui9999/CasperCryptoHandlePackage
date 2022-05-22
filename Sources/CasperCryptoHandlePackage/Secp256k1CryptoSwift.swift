@@ -16,6 +16,8 @@ import SwiftECC
         let (publicKey, privateKey) = domain.makeKeyPair()
         ret.privateKeyInStr = privateKey.pem
         ret.publicKeyInStr = publicKey.pem
+        print("private der bytes is:\(privateKey.der)")
+        print("public der bytes is:\(publicKey.der)")
         return ret
     }
 /**
