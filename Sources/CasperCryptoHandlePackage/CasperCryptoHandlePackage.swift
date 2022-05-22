@@ -1,5 +1,5 @@
 import SwiftECC
-import Blake2
+
 public class CasperCryptoHandlePackage {
     public private(set) var text = "Hello, World!"
 
