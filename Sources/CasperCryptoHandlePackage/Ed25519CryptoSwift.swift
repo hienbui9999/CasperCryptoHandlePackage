@@ -98,31 +98,26 @@ let prefixPublicKeyHexaStr: String = "302a300506032b656e032100"
             return ERROR_STRING
         }
     }
-    /// Write private key to pem file
-    public func writePrivateKeyToPemFile(privateKeyToWrite: Curve25519.Signing.PrivateKey,fileName: String) throws {
-        let privateKeyInBase64 = (prefixPrivateKeyData + privateKeyToWrite.rawRepresentation).base64EncodedString()
-        var text = "-----BEGIN PRIVATE KEY-----"
-        text = text + "\n" + privateKeyInBase64
-        text = text + "\n" + "-----END PRIVATE KEY-----"
-        let thisSourceFile = URL(fileURLWithPath: #file)
-        let thisDirectory = thisSourceFile.deletingLastPathComponent()
-        let fileURL = thisDirectory.appendingPathComponent(fileName)
-        if FileManager.default.fileExists(atPath: fileURL.path) {
-            do {
-                try FileManager.default.removeItem(atPath: fileURL.path)
-            } catch {
-             //   NSLog("Ed25519 Private key file does not exist, about to create new one!")
-            }
-         //   NSLog("Delete auto generated Ed25519 private file.")
+    
+    /// This function generate public key string to write to pem file
+    public func getPublicKeyStringForPemFile(publicKeyStr:String) -> String {
+        let strArray : Array = publicKeyStr.components(separatedBy: "_");
+        var publicKeyArray:Array<UInt8> = Array<UInt8>();
+        for i in strArray {
+            publicKeyArray.append(UInt8(i)!)
         }
         do {
-            try text.write(to: fileURL, atomically: false, encoding: .utf8)
-        }
-        catch {
-            throw PemFileHandlerError.writePemFileError
+            let publicKey:Curve25519.Signing.PublicKey = try Curve25519.Signing.PublicKey.init(rawRepresentation: publicKeyArray)
+            let publicKeyInBase64 = (prefixPublicKeyData + publicKey.rawRepresentation).base64EncodedString()
+            var text = "-----BEGIN PUBLIC KEY-----"
+            text = text + "\n" + publicKeyInBase64
+            text = text + "\n" + "-----END PUBLIC KEY-----"
+            return text
+        } catch {
+            return ERROR_STRING
         }
     }
-
+    /*
     /// Write public key to pem file
     public func writePublicKeyToPemFile(publicKeyToWrite: Curve25519.Signing.PublicKey, fileName: String) throws {
         let publicKeyInBase64 = (prefixPublicKeyData + publicKeyToWrite.rawRepresentation).base64EncodedString()
@@ -148,8 +143,8 @@ let prefixPublicKeyHexaStr: String = "302a300506032b656e032100"
             throw PemFileHandlerError.writePemFileError
         }
     }
-
-    public func readPrivateKeyFromPemString(pemStr: String) -> String {
+*/
+    public func getPrivateKeyStringFromPemString(pemStr: String) -> String {
         let pemIndex = pemStr.index(pemStr.startIndex, offsetBy: 21)
         let privateBase64: String = String(pemStr[pemIndex..<pemStr.endIndex])
         let fullPemKeyBase64 = prefixPrivateKeyStr + privateBase64
@@ -173,7 +168,8 @@ let prefixPublicKeyHexaStr: String = "302a300506032b656e032100"
             return ERROR_STRING
         }
     }
-    public func readPublicKeyFromPemString(pemStr: String) -> String {
+    
+    public func getPublicKeyStringFromPemString(pemStr: String) -> String {
         var pemStr2 = pemStr.trimmingCharacters(in: .whitespacesAndNewlines)
         if pemStr2.count > 60 {
             let index = pemStr.index(pemStr.startIndex, offsetBy: 65)
@@ -201,53 +197,7 @@ let prefixPublicKeyHexaStr: String = "302a300506032b656e032100"
             return ERROR_STRING
         }
     }
-    /*
-    public func readPublicKeyFromPemFile(pemFileName: String) throws -> Curve25519.Signing.PublicKey{
-       // if let dir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first {
-     //       let fileURL = dir.appendingPathComponent(pemFileName)
-     //       do {
-    //            let text2 = try String(contentsOf: fileURL, encoding: .utf8)
-        let thisSourceFile = URL(fileURLWithPath: #file)
-        let thisDirectory = thisSourceFile.deletingLastPathComponent()
-        let resourceURL = thisDirectory.appendingPathComponent(pemFileName)
-        do {
-            let text2 = try String(contentsOf: resourceURL, encoding: .utf8)
-            if !text2.contains(prefixPemPublicStr) {
-                throw PemFileHandlerError.invalidPemKeyFormat
-            }
-            if !text2.contains(suffixPemPublicStr) {
-                throw PemFileHandlerError.invalidPemKeyFormat
-            }
-            let element = text2.components(separatedBy: prefixPemPublicStr)
-            let text1 = element[1]
-            let textE = text1.components(separatedBy: suffixPemPublicStr)
-            var pemStr = String(textE[0])
-            pemStr = pemStr.trimmingCharacters(in: .whitespacesAndNewlines)
-            if pemStr.count > 60 {
-                let index = pemStr.index(pemStr.startIndex, offsetBy: 65)
-                let realPemStr = String(pemStr[..<index])
-                pemStr = realPemStr
-            }
-            pemStr = pemStr.trimmingCharacters(in: .whitespacesAndNewlines)
-            let pemIndex = pemStr.index(pemStr.startIndex, offsetBy: 16)
-            let publicBase64: String = String(pemStr[pemIndex..<pemStr.endIndex])
-        
-            if let base64DecodeShort = publicBase64.base64Decoded {
-                do {
-                    let publicKeyFromPem = try Curve25519.Signing.PublicKey.init(rawRepresentation: base64DecodeShort.bytes)
-                    return publicKeyFromPem
-                } catch {
-                    throw GenerateKeyError.publicKeyGenerateError
-                }
-            } else {
-                throw PemFileHandlerError.invalidPemKeyFormat
-            }
-        }
-        catch {
-            throw PemFileHandlerError.readPemFileNotFound
-        }
-    }
-    */
+    // This function sign the message (in String format) with given private key (in String format)
     public func signMessageString(messageToSign:String,privateKeyStr:String) -> String {
         //first change to String to Bytes to make private key
         let dataToSign = Data(messageToSign.hexaBytes);
@@ -265,7 +215,7 @@ let prefixPublicKeyHexaStr: String = "302a300506032b656e032100"
             return ERROR_STRING
         }
     }
-   
+    // This function verify the signed message (in String format) with given public key (in String format) and original message (in String format)
     public func verifyMessage(signedMessage:String,publicKeyToVerifyString:String,originalMessage:String)-> Bool {
         let strArray : Array = publicKeyToVerifyString.components(separatedBy: "_");
         var publicKeyArray:Array<UInt8> = Array<UInt8>();
