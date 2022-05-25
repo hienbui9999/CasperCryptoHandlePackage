@@ -65,8 +65,8 @@ import SwiftECC
     public func verifyMessage(withPublicKeyPemString: String, signature: String, plainMessage: String) -> Bool {
         do {
             let publicKey = try ECPublicKey.init(pem: withPublicKeyPemString)
-            let rString = ""//signature r hex decode => data=>r
-            let sString = ""//signature s hex decode => data=>s
+           // let rString = ""//signature r hex decode => data=>r
+           // let sString = ""//signature s hex decode => data=>s
             //let signature2 = ECSignature.init(domain: domain, r: signature.r, s: signature.s)
            // let trueMessage = publicKey.verify(signature: signature, msg: plainMessage.bytes)
             return true
