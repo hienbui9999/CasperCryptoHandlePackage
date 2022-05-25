@@ -132,33 +132,7 @@ let prefixPublicKeyHexaStr: String = "302a300506032b656e032100"
             return ERROR_STRING
         }
     }
-    /*
-    /// Write public key to pem file
-    public func writePublicKeyToPemFile(publicKeyToWrite: Curve25519.Signing.PublicKey, fileName: String) throws {
-        let publicKeyInBase64 = (prefixPublicKeyData + publicKeyToWrite.rawRepresentation).base64EncodedString()
-        var text = "-----BEGIN PUBLIC KEY-----"
-        text = text + "\n" + publicKeyInBase64
-        text = text + "\n" + "-----END PUBLIC KEY-----"
-        
-        let thisSourceFile = URL(fileURLWithPath: #file)
-        let thisDirectory = thisSourceFile.deletingLastPathComponent()
-        let fileURL = thisDirectory.appendingPathComponent(fileName)
-        if FileManager.default.fileExists(atPath: fileURL.path) {
-            do {
-                try FileManager.default.removeItem(atPath: fileURL.path)
-            } catch {
-                //NSLog("Ed25519 Private key file does not exist, about to create new one!")
-            }
-           // NSLog("Delete auto generated Ed25519 private file.")
-        }
-        do {
-            try text.write(to: fileURL, atomically: false, encoding: .utf8)
-        }
-        catch {
-            throw PemFileHandlerError.writePemFileError
-        }
-    }
-*/
+    
     public func getPrivateKeyStringFromPemString(pemStr: String) -> String {
         let pemIndex = pemStr.index(pemStr.startIndex, offsetBy: 21)
         let privateBase64: String = String(pemStr[pemIndex..<pemStr.endIndex])
@@ -249,7 +223,6 @@ let prefixPublicKeyHexaStr: String = "302a300506032b656e032100"
             return false
         }
     }
-    
 }
 
 extension StringProtocol {
@@ -282,7 +255,6 @@ extension Data {
     }
     return String(utf16CodeUnits: hexChars, count: hexChars.count)
   }
-
 }
 
 extension String {
@@ -309,49 +281,41 @@ extension String {
     }
     return Data(bytes)
   }
-    //Recently added
-    func hexToString()->String{
-            
-            var finalString = ""
-            let chars = Array(self)
-            
-            for count in stride(from: 0, to: chars.count - 1, by: 2){
-                let firstDigit =  Int.init("\(chars[count])", radix: 16) ?? 0
-                let lastDigit = Int.init("\(chars[count + 1])", radix: 16) ?? 0
-                let decimal = firstDigit * 16 + lastDigit
-                let decimalString = String(format: "%c", decimal) as String
-                finalString.append(Character.init(decimalString))
-            }
-            return finalString
-            
+    
+func hexToString()->String{
+        var finalString = ""
+        let chars = Array(self)
+        for count in stride(from: 0, to: chars.count - 1, by: 2){
+            let firstDigit =  Int.init("\(chars[count])", radix: 16) ?? 0
+            let lastDigit = Int.init("\(chars[count + 1])", radix: 16) ?? 0
+            let decimal = firstDigit * 16 + lastDigit
+            let decimalString = String(format: "%c", decimal) as String
+            finalString.append(Character.init(decimalString))
         }
-    //recently added
+        return finalString
+    }
     var hexadecimal: Data? {
-            var data = Data(capacity: count / 2)
-            
-            let regex = try! NSRegularExpression(pattern: "[0-9a-f]{1,2}", options: .caseInsensitive)
-            regex.enumerateMatches(in: self, range: NSRange(startIndex..., in: self)) { match, _, _ in
-                let byteString = (self as NSString).substring(with: match!.range)
-                let num = UInt8(byteString, radix: 16)!
-                data.append(num)
-            }
-            
-            guard data.count > 0 else { return nil }
-            
-            return data
+        var data = Data(capacity: count / 2)
+        let regex = try! NSRegularExpression(pattern: "[0-9a-f]{1,2}", options: .caseInsensitive)
+        regex.enumerateMatches(in: self, range: NSRange(startIndex..., in: self)) { match, _, _ in
+            let byteString = (self as NSString).substring(with: match!.range)
+            let num = UInt8(byteString, radix: 16)!
+            data.append(num)
         }
+        guard data.count > 0 else { return nil }
+        return data
+    }
 }
 
 extension Data {
-
+    
     init?(base64EncodedURLSafe string: String, options: Base64DecodingOptions = []) {
         let string = string
             .replacingOccurrences(of: "-", with: "+")
             .replacingOccurrences(of: "_", with: "/")
-
         self.init(base64Encoded: string, options: options)
     }
-
+    
     public var bytes: Array<UInt8> {
       Array(self)
     }
@@ -361,7 +325,6 @@ extension Data {
 extension StringProtocol {
     var hexaData: Data { .init(hexa) }
     var hexaBytes: [UInt8] { .init(hexa) }
-
     private var hexa: UnfoldSequence<UInt8, Index> {
         sequence(state: startIndex) { startIndex in
             guard startIndex < self.endIndex else { return nil }
@@ -370,11 +333,9 @@ extension StringProtocol {
             return UInt8(self[startIndex..<endIndex], radix: 16)
         }
     }
-
 }
 extension String {
     @inlinable
-
     public var bytes: Array<UInt8> {
       data(using: String.Encoding.utf8, allowLossyConversion: true)?.bytes ?? Array(utf8)
     }
