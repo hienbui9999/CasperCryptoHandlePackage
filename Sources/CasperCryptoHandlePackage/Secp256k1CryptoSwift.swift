@@ -16,8 +16,6 @@ import SwiftECC
         let (publicKey, privateKey) = domain.makeKeyPair()
         ret.privateKeyInStr = privateKey.pem
         ret.publicKeyInStr = publicKey.pem
-       // print("private der bytes is:\(privateKey.der)")
-       // print("public der bytes is:\(publicKey.der)")
         return ret
     }
 /**
@@ -53,10 +51,6 @@ import SwiftECC
             let signature = privateKey.sign(msg: Data(messageToSign.hexaBytes), deterministic: false)
             let domain = Domain.instance(curve: .EC256k1)
             let signature2 = ECSignature.init(domain: domain, r: signature.r, s: signature.s)
-            print ("signature r :\(signature2.r)")
-            print ("signature s :\(signature2.s)")
-            print ("signature r data hex_encode:\(signature2.r.data.hexEncodedString())")
-            print ("signature s data hex_encode:\(signature2.s.data.hexEncodedString())")
             return signature2.r.data.hexEncodedString() + signature2.s.data.hexEncodedString()
         } catch {
             return ERROR_STRING
