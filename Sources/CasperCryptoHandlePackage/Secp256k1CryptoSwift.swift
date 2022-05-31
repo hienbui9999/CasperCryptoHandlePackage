@@ -65,8 +65,8 @@ import SwiftECC
             print("Full signature:\(signature), rPart:\(rPart), sPart:\(sPart)")
            // let rString = ""//signature r hex decode => data=>r
            // let sString = ""//signature s hex decode => data=>s
-            let signature2 = ECSignature.init(domain: Domain.instance(curve: .EC256k1) , r: rPart, s: sPart)
-            let trueMessage = publicKey.verify(signature: signature2, msg: plainMessage.bytes)
+           // let signature2 = ECSignature.init(domain: Domain.instance(curve: .EC256k1) , r: rPart, s: sPart)
+           // let trueMessage = publicKey.verify(signature: signature2, msg: plainMessage.bytes)
             return true
         } catch {
             return false
