@@ -98,6 +98,12 @@ let prefixPublicKeyHexaStr: String = "302a300506032b656e032100"
     /// This function generate private key string to write to pem file
     public func getPrivateKeyStringForPemFile(privateKeyStr:String) -> String {
         let strArray : Array = privateKeyStr.components(separatedBy: "_");
+        if (strArray.isEmpty) {
+            return ERROR_STRING
+        }
+        if (strArray.count < 2) {
+            return ERROR_STRING;
+        }
         var privateKeyArray:Array<UInt8> = Array<UInt8>();
         for i in strArray {
             privateKeyArray.append(UInt8(i)!)
@@ -117,6 +123,12 @@ let prefixPublicKeyHexaStr: String = "302a300506032b656e032100"
     /// This function generate public key string to write to pem file
     public func getPublicKeyStringForPemFile(publicKeyStr:String) -> String {
         let strArray : Array = publicKeyStr.components(separatedBy: "_");
+        if (strArray.isEmpty) {
+            return ERROR_STRING
+        }
+        if (strArray.count < 2) {
+            return ERROR_STRING;
+        }
         var publicKeyArray:Array<UInt8> = Array<UInt8>();
         for i in strArray {
             publicKeyArray.append(UInt8(i)!)
