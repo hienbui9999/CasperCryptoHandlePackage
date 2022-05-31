@@ -59,10 +59,14 @@ import SwiftECC
     public func verifyMessage(withPublicKeyPemString: String, signature: String, plainMessage: String) -> Bool {
         do {
             let publicKey = try ECPublicKey.init(pem: withPublicKeyPemString)
+            let signatureLength = signature.count;
+            let rPart : String = signature.substring(from: 0, to: signatureLength/2);
+            let sPart : String = signature.substring(from: signatureLength/2, to: signatureLength);
+            print("Full signature:\(signature), rPart:\(rPart), sPart:\(sPart)")
            // let rString = ""//signature r hex decode => data=>r
            // let sString = ""//signature s hex decode => data=>s
-            //let signature2 = ECSignature.init(domain: domain, r: signature.r, s: signature.s)
-           // let trueMessage = publicKey.verify(signature: signature, msg: plainMessage.bytes)
+            let signature2 = ECSignature.init(domain: Domain.instance(curve: .EC256k1) , r: rPart, s: sPart)
+            let trueMessage = publicKey.verify(signature: signature2, msg: plainMessage.bytes)
             return true
         } catch {
             return false
