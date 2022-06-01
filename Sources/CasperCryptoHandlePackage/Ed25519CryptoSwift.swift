@@ -209,8 +209,17 @@ let prefixPublicKeyHexaStr: String = "302a300506032b656e032100"
         //first change to String to Bytes to make private key
         let dataToSign = Data(messageToSign.hexaBytes);
         let strArray : Array = privateKeyStr.components(separatedBy: "_");
+        if (strArray.isEmpty) {
+            return ERROR_STRING
+        }
+        if (strArray.count < 2) {
+            return ERROR_STRING;
+        }
         var privateKeyArray:Array<UInt8> = Array<UInt8>();
         for i in strArray {
+            if(!i.isNumber) {
+                return ERROR_STRING;
+            }
             privateKeyArray.append(UInt8(i)!)
         }
         do {
@@ -225,8 +234,17 @@ let prefixPublicKeyHexaStr: String = "302a300506032b656e032100"
     // This function verify the signed message (in String format) with given public key (in String format) and original message (in String format)
     public func verifyMessage(signedMessage:String,publicKeyToVerifyString:String,originalMessage:String)-> Bool {
         let strArray : Array = publicKeyToVerifyString.components(separatedBy: "_");
+        if (strArray.isEmpty) {
+            return false
+        }
+        if (strArray.count < 2) {
+            return false;
+        }
         var publicKeyArray:Array<UInt8> = Array<UInt8>();
         for i in strArray {
+            if(!i.isNumber) {
+                return false;
+            }
             publicKeyArray.append(UInt8(i)!)
         }
         do {
