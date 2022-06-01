@@ -35,7 +35,7 @@ Create 1 ObjectiveC source file, add the following line of importing at the begi
 ```Swift
 @import CasperCryptoHandlePackage;
 ```
-Now you can call Swift function of this package from ObjectiveC, such as this call to generate the (Private,Public) key pair
+Now you can call Swift function of this package from ObjectiveC, such as this call to generate the (Private,Public) key pair, written in ObjectiveC:
 
 ```Swift
 -(CryptoKeyPair *) generateKey {
