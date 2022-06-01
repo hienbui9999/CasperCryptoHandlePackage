@@ -68,6 +68,23 @@ This ObjectiveC function simply call the Swift function to sign the message
 ```Swift
     Ed25519CrytoSwift * ed25519 = [[Ed25519CrytoSwift alloc] init];
     NSString * ret = [ed25519 signMessageStringWithMessageToSign:messageToSign privateKeyStr:privateKeyStr];
-}
 ```
 
+Here is a list of function provided by Swift for Ed25519 and Secp256k1:
+```Swift
+
+public func generateKeyPair() -> KeyPairClass
+
+public func getPrivateKeyStringForPemFile(privateKeyStr:String) -> String 
+
+public func getPublicKeyStringForPemFile(publicKeyStr:String) -> String
+
+public func getPrivateKeyStringFromPemString(pemStr: String) -> String
+
+public func getPublicKeyStringFromPemString(pemStr: String) -> String 
+
+public func signMessageString(messageToSign:String,privateKeyStr:String) -> String 
+
+public func verifyMessage(signedMessage:String,publicKeyToVerifyString:String,originalMessage:String)-> Bool
+
+```
