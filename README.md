@@ -38,7 +38,36 @@ Create 1 ObjectiveC source file, add the following line of importing at the begi
 Now you can call Swift function of this package from ObjectiveC, such as this call to generate the (Private,Public) key pair
 
 ```Swift
+-(CryptoKeyPair *) generateKey {
+    CryptoKeyPair * ret = [[CryptoKeyPair alloc] init];
+    Ed25519CrytoSwift * ed25519 = [[Ed25519CrytoSwift alloc] init];
+    KeyPairClass * kpc = [ed25519 generateKeyPair];
+    ret.privateKeyStr = kpc.privateKeyInStr;
+    ret.publicKeyStr = kpc.publicKeyInStr;
+    return ret;
+}
+```
+in which the following call is call to Swift package:
+
+```Swift
 Ed25519CrytoSwift * ed25519 = [[Ed25519CrytoSwift alloc] init];
 KeyPairClass * kpc = [ed25519 generateKeyPair];
+```
+
+Or if you wish to sign a message with Ed25519 crypto, in ObjectiveC you will write like this
+
+```Swift
+-(NSString*) signMessageWithValue:(NSString*) messageToSign withPrivateKey:(NSString*) privateKeyStr {
+    Ed25519CrytoSwift * ed25519 = [[Ed25519CrytoSwift alloc] init];
+    NSString * ret = [ed25519 signMessageStringWithMessageToSign:messageToSign privateKeyStr:privateKeyStr];
+    return ret;
+}
+```
+This ObjectiveC function simply call the Swift function to sign the message
+
+```Swift
+    Ed25519CrytoSwift * ed25519 = [[Ed25519CrytoSwift alloc] init];
+    NSString * ret = [ed25519 signMessageStringWithMessageToSign:messageToSign privateKeyStr:privateKeyStr];
+}
 ```
 
