@@ -60,14 +60,11 @@ import SwiftECC
         do {
             let publicKey = try ECPublicKey.init(pem: withPublicKeyPemString)
             let signatureLength = signature.count;
-            let rPart : String = signature.substring(from: 0, to: signatureLength/2);
+            let rPart : String = signature.substring(from: 0, to: signatureLength/2-1);
             let sPart : String = signature.substring(from: signatureLength/2, to: signatureLength);
-            print("Full signature:\(signature), rPart:\(rPart), sPart:\(sPart)")
-           // let rString = ""//signature r hex decode => data=>r
-           // let sString = ""//signature s hex decode => data=>s
-           // let signature2 = ECSignature.init(domain: Domain.instance(curve: .EC256k1) , r: rPart, s: sPart)
-           // let trueMessage = publicKey.verify(signature: signature2, msg: plainMessage.bytes)
-            return true
+            let signature2 = ECSignature.init(domain: Domain.instance(curve: .EC256k1) , r: rPart.hexDecodedData().bytes, s: sPart.hexDecodedData().bytes)
+            let trueMessage = publicKey.verify(signature: signature2, msg: plainMessage.hexDecodedData().bytes)
+            return trueMessage
         } catch {
             return false
         }
