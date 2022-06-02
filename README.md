@@ -27,8 +27,12 @@ From ObjectiveC package project, choose "Package.swift" file and add the followi
         .package(name: "CasperCryptoHandlePackage", url: "https://github.com/hienbui9999/CasperCryptoHandlePackage.git", from: "1.0.6"),
     ]
 ```
+Save the "Package.swift" file, wait for a while for the Project to load the Swift Package.
+
 Somehow it is like what is in this image, as you can see when the package is loaded, there will be "CasperCryptoHandlePackage 1.0.6" in the left panel 
-<img width="1440" alt="Screen Shot 2022-06-01 at 10 01 12" src="https://user-images.githubusercontent.com/94465107/171319263-0ae34b32-d087-42ab-832b-829402bc9356.png">
+
+<img width="1440" alt="Screen Shot 2022-06-02 at 16 36 07" src="https://user-images.githubusercontent.com/94465107/171602199-581e5808-61c0-4152-8a79-39767de28554.png">
+
 
 Create 1 ObjectiveC source file, add the following line of importing at the beginning of the file
 
@@ -47,7 +51,7 @@ Now you can call Swift function of this package from ObjectiveC, such as this ca
     return ret;
 }
 ```
-in which the following call is call to Swift package:
+in which the following call is call to Swift package function:
 
 ```Swift
 Ed25519CrytoSwift * ed25519 = [[Ed25519CrytoSwift alloc] init];
