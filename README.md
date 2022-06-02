@@ -1,4 +1,4 @@
-# CasperCryptoHandlePackage
+# Casper Crypto Handle Package - Swift package for ObjectiveC call
 
 ## About this package
 
