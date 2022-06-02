@@ -92,3 +92,9 @@ public func signMessageString(messageToSign:String,privateKeyStr:String) -> Stri
 public func verifyMessage(signedMessage:String,publicKeyToVerifyString:String,originalMessage:String)-> Bool
 
 ```
+
+# Example of usage
+
+Please refer to the Casper ObjectiveC SDK at this address https://github.com/tqhuy2018/Casper-ObjectiveC-sdk
+
+This Swift package is used in the Crypto functions and Put Deploy function of the Casper ObjectiveC SDK
